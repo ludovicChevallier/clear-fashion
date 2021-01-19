@@ -215,7 +215,7 @@ console.log(product_date_sort_by_brands);
 // 🎯 TODO: Compute the p90 price value
 // 1. Compute the p90 price value of each brand
 // The p90 value (90th percentile) is the lower value expected to be exceeded in 90% of the products
-
+/*
 function Quartile(data, q) {
   data=Array_Sort_Numbers(data);
   var pos = ((data.length) - 1) * q;
@@ -239,7 +239,7 @@ for (var i=0;i<brands.length;i++){
 }
 console.log(brands[0].liste[0].price)
 
-
+*/
 
 
 /**
@@ -323,12 +323,24 @@ const COTELE_PARIS = [
 // 🎯 TODO: Find a specific product
 // 1. Find the product with the uuid `b56c6d88-749a-5b4c-b571-e5b5c6483131`
 // 2. Log the product
-
-
+function find(texte){
+  for (var i=0;i<COTELE_PARIS.length;i++){
+    if(COTELE_PARIS[i].uuid==texte){
+      return i;
+    }
+    
+  }
+}
+let product_id=find(`b56c6d88-749a-5b4c-b571-e5b5c6483131`);
+console.log("here is the product:")
+console.log(COTELE_PARIS[product_id]);
 // 🎯 TODO: Delete a specific product
 // 1. Delete the product with the uuid `b56c6d88-749a-5b4c-b571-e5b5c6483131`
 // 2. Log the new list of product
-
+console.log(COTELE_PARIS);
+product_id=find(`b56c6d88-749a-5b4c-b571-e5b5c6483131`);
+delete COTELE_PARIS[product_id]
+console.log(COTELE_PARIS);
 // 🎯 TODO: Save the favorite product
 let blueJacket = {
   'link': 'https://coteleparis.com/collections/tous-les-produits-cotele/products/la-veste-bleu-roi',
@@ -341,9 +353,12 @@ let blueJacket = {
 let jacket = blueJacket;
 jacket.favorite = true;
 
+
 // 1. Log `blueJacket` and `jacket` variables
 // 2. What do you notice?
-
+console.log(jacket)
+console.log(blueJacket)
+// we can see that bluejacket got an new variable even if we didn't assign it ourselve 
 blueJacket = {
   'link': 'https://coteleparis.com/collections/tous-les-produits-cotele/products/la-veste-bleu-roi',
   'price': 110,
@@ -351,8 +366,12 @@ blueJacket = {
 };
 
 // 3. Update `jacket` property with `favorite` to true WITHOUT changing blueJacket properties
-
-
+console.log("after modification of the varaibles favortie:")
+blueJacket.favorite=true;
+jacket=Object.assign({}, blueJacket);
+jacket.favorite = false;
+console.log(jacket)
+console.log(blueJacket)
 
 
 
@@ -365,3 +384,6 @@ blueJacket = {
 // 🎯 TODO: Save in localStorage
 // 1. Save MY_FAVORITE_BRANDS in the localStorage
 // 2. log the localStorage
+console.log("save data:")
+localStorage.setItem('MY_FAVORITE_BRANDS', JSON.stringify(MY_FAVORITE_BRANDS));
+console.log(localStorage)
