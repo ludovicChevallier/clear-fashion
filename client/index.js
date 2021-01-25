@@ -113,7 +113,8 @@ console.log(product_sort_date);
 // 🎯 TODO: Filter a specific price range
 // 1. Filter the list of products between 50€ and 100€
 // 2. Log the list
-let product_filter=marketplace.filter(price=>50 | price<=100);
+let product_filter=marketplace.filter(product =>  product.price>=50 & product.price<=100);
+console.log("product bewteen 50 and 100 euros");
 console.log(product_filter);
 
 
