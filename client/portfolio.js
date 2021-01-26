@@ -11,6 +11,11 @@ const selectPage = document.querySelector('#page-select');
 const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
 
+const sectionbrand = document.querySelector('#brand-select');
+
+
+
+
 /**
  * Set global value
  * @param {Array} result - products to display
@@ -27,18 +32,28 @@ const setCurrentProducts = ({result, meta}) => {
  * @param  {Number}  [size=12] - size of the page
  * @return {Object}
  */
-const fetchProducts = async (page = 1, size = 12) => {
+ /*charge les produits depuis une api*/
+const fetchProducts = async (page = 1, size = 12,brand="") => {
+
   try {
     const response = await fetch(
       `https://clear-fashion-api.vercel.app?page=${page}&size=${size}`
     );
+
     const body = await response.json();
 
     if (body.success !== true) {
+
       console.error(body);
       return {currentProducts, currentPagination};
     }
-
+    else if(brand!=""){
+      for(var i=0;i<body.data.length;i++){
+        if(body.data[i].brand!=brand){
+          delete body[i];
+        }
+      }
+    }
     return body.data;
   } catch (error) {
     console.error(error);
@@ -46,10 +61,17 @@ const fetchProducts = async (page = 1, size = 12) => {
   }
 };
 
+
+/* affiche la liste des produits*/
 /**
  * Render list of products
  * @param  {Array} products
  */
+
+
+
+let brands=[""]
+
 const renderProducts = products => {
   const fragment = document.createDocumentFragment();
   const div = document.createElement('div');
@@ -62,28 +84,44 @@ const renderProducts = products => {
         <span>${product.price}</span>
       </div>
     `;
-    })
+  })
     .join('');
-
+    /*ajoute les brands*/
+  for (var i=0;i<products.length;i++){
+    if(brands.includes(products[i].brand)==false){
+      brands.push(products[i].brand);
+    };
+  }
   div.innerHTML = template;
   fragment.appendChild(div);
   sectionProducts.innerHTML = '<h2>Products</h2>';
   sectionProducts.appendChild(fragment);
 };
 
+
+
 /**
  * Render page selector
  * @param  {Object} pagination
  */
+ /*indique dans le selecteur combien de value on veur*/
 const renderPagination = pagination => {
   const {currentPage, pageCount} = pagination;
   const options = Array.from(
     {'length': pageCount},
     (value, index) => `<option value="${index + 1}">${index + 1}</option>`
   ).join('');
+  const options2 = Array.from(
+    {'length': brands.length},
+    (value, index) => `<option value="${index + 1}">${brands[index]}</option>`
+  ).join('');
+
 
   selectPage.innerHTML = options;
   selectPage.selectedIndex = currentPage - 1;
+
+  sectionbrand.innerHTML=options2;
+  sectionbrand.selectedIndex = currentPage - 1;
 };
 
 /**
@@ -110,6 +148,8 @@ const render = (products, pagination) => {
  * Select the number of products to display
  * @type {[type]}
  */
+ /*affiche les produits en fonctions du nombre de produits sont choisi*/
+ /*si il ya un chagement de nombre rappelle la fonction qui va cherhcher les products et les affiches */
 selectShow.addEventListener('change', event => {
   fetchProducts(currentPagination.currentPage, parseInt(event.target.value))
     .then(setCurrentProducts)
@@ -121,3 +161,24 @@ document.addEventListener('DOMContentLoaded', () =>
     .then(setCurrentProducts)
     .then(() => render(currentProducts, currentPagination))
 );
+
+
+/*features 1*/
+/*currentPaginantion contient le nombre de produit voulant être affiché*/
+/*affiche les produits en fonctions du nombre de page choisie*/
+selectPage.addEventListener('change', event => {
+  fetchProducts( parseInt(event.target.value),currentPagination.pageSize)
+  .then(setCurrentProducts)
+  .then(() => render(currentProducts, currentPagination));
+  console.log(currentPagination);
+});
+
+/*features 2*/
+/*
+sectionbrand.addEventListener('change', event => {
+  fetchProducts(currentPagination.currentPage, currentPagination.pageSize,brands[event.target.value-1])
+    .then(setCurrentProducts)
+    .then(() => render(currentProducts, currentPagination));
+    console.log(currentPagination);
+});
+*/
