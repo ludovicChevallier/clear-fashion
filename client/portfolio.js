@@ -4,14 +4,16 @@
 // current products on the page
 let currentProducts = [];
 let currentPagination = {};
+let currentBrands=[];
 
 // inititiqte selectors
 const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
 const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
-
 const sectionbrand = document.querySelector('#brand-select');
+const sectiondate=document.querySelector('#recentrelease');
+const reasonableprice=document.querySelector('#reasonableprice');
 
 
 
@@ -21,6 +23,7 @@ const sectionbrand = document.querySelector('#brand-select');
  * @param {Array} result - products to display
  * @param {Object} meta - pagination meta info
  */
+ /*meta est le contenu que retourne l'api du genre le numéro de la page et le nombre de product*/
 const setCurrentProducts = ({result, meta}) => {
   currentProducts = result;
   currentPagination = meta;
@@ -33,7 +36,8 @@ const setCurrentProducts = ({result, meta}) => {
  * @return {Object}
  */
  /*charge les produits depuis une api*/
-const fetchProducts = async (page = 1, size = 12,brand="") => {
+ /*si tous se passe bien retourne les donnés plus les données de l'api*/
+const fetchProducts = async (page = 1, size = 12) => {
 
   try {
     const response = await fetch(
@@ -47,13 +51,7 @@ const fetchProducts = async (page = 1, size = 12,brand="") => {
       console.error(body);
       return {currentProducts, currentPagination};
     }
-    else if(brand!=""){
-      for(var i=0;i<body.data.length;i++){
-        if(body.data[i].brand!=brand){
-          delete body[i];
-        }
-      }
-    }
+    console.log(body.data);
     return body.data;
   } catch (error) {
     console.error(error);
@@ -70,7 +68,7 @@ const fetchProducts = async (page = 1, size = 12,brand="") => {
 
 
 
-let brands=[""]
+
 
 const renderProducts = products => {
   const fragment = document.createDocumentFragment();
@@ -82,22 +80,34 @@ const renderProducts = products => {
         <span>${product.brand}</span>
         <a href="${product.link}">${product.name}</a>
         <span>${product.price}</span>
+        <span>${product.released}</span>
       </div>
     `;
   })
     .join('');
     /*ajoute les brands*/
-  for (var i=0;i<products.length;i++){
-    if(brands.includes(products[i].brand)==false){
-      brands.push(products[i].brand);
-    };
-  }
+
   div.innerHTML = template;
   fragment.appendChild(div);
   sectionProducts.innerHTML = '<h2>Products</h2>';
   sectionProducts.appendChild(fragment);
 };
-
+/*on affiche ici les brands*/
+const renderbrands=products =>{
+  let brands=[""]
+  for (var i=0;i<products.length;i++){
+    if(brands.includes(products[i].brand)==false){
+      brands.push(products[i].brand);
+    };
+  }
+  const options2 = Array.from(
+    {'length': brands.length},
+    (value, index) => `<option value="${brands[index]}">${brands[index]}</option>`
+  ).join('');
+/*indique le contenu et à qu'elle valeur on veut commencer*/
+  sectionbrand.innerHTML=options2;
+  sectionbrand.selectedIndex = 0;
+};
 
 
 /**
@@ -111,17 +121,13 @@ const renderPagination = pagination => {
     {'length': pageCount},
     (value, index) => `<option value="${index + 1}">${index + 1}</option>`
   ).join('');
-  const options2 = Array.from(
-    {'length': brands.length},
-    (value, index) => `<option value="${index + 1}">${brands[index]}</option>`
-  ).join('');
+
 
 
   selectPage.innerHTML = options;
   selectPage.selectedIndex = currentPage - 1;
 
-  sectionbrand.innerHTML=options2;
-  sectionbrand.selectedIndex = currentPage - 1;
+
 };
 
 /**
@@ -133,12 +139,21 @@ const renderIndicators = pagination => {
 
   spanNbProducts.innerHTML = count;
 };
-
+/*permet l'affichage des prduits des indicateur */
 const render = (products, pagination) => {
+  renderbrands(products);
   renderProducts(products);
   renderPagination(pagination);
   renderIndicators(pagination);
 };
+/*on retourne les produits qui vont être affiché */
+const filterbrand=(products,brand) =>{
+  if(brand==""){
+    return products;
+  }
+  return products.filter(product => product.brand==brand)
+
+}
 
 /**
  * Declaration of all Listeners
@@ -150,6 +165,9 @@ const render = (products, pagination) => {
  */
  /*affiche les produits en fonctions du nombre de produits sont choisi*/
  /*si il ya un chagement de nombre rappelle la fonction qui va cherhcher les products et les affiches */
+ /*1: il charge les données avec la page actuelle et avec comme nombre de produit celui choisi dans le selecteur*/
+ /*2: ensuite retourne les meta et result */
+ /*3:puis on affiche le tout avec render*/
 selectShow.addEventListener('change', event => {
   fetchProducts(currentPagination.currentPage, parseInt(event.target.value))
     .then(setCurrentProducts)
@@ -174,11 +192,38 @@ selectPage.addEventListener('change', event => {
 });
 
 /*features 2*/
-/*
+
 sectionbrand.addEventListener('change', event => {
-  fetchProducts(currentPagination.currentPage, currentPagination.pageSize,brands[event.target.value-1])
-    .then(setCurrentProducts)
-    .then(() => render(currentProducts, currentPagination));
-    console.log(currentPagination);
+  renderProducts(filterbrand(currentProducts,event.target.value));
 });
-*/
+/*features 3*/
+
+
+const filterdate=(products) => {
+  return products.filter(product =>Date.parse(product.released) > Date.now() - 1000*3600*24*30);
+};
+
+sectiondate.addEventListener('click',event => {
+  if(sectiondate.checked==true){
+    renderProducts(filterdate(currentProducts));
+  }
+  else{
+    renderProducts(currentProducts);
+  }
+
+});
+/*features 4*/
+
+const filterprice=(products) => {
+  return products.filter(product =>product.price<50);
+};
+
+reasonableprice.addEventListener('click',event => {
+  if(reasonableprice.checked==true){
+    renderProducts(filterprice(currentProducts));
+  }
+  else{
+    renderProducts(currentProducts);
+  }
+
+});
