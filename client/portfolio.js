@@ -14,6 +14,8 @@ const spanNbProducts = document.querySelector('#nbProducts');
 const sectionbrand = document.querySelector('#brand-select');
 const sectiondate=document.querySelector('#recentrelease');
 const reasonableprice=document.querySelector('#reasonableprice');
+const sortselect=document.querySelector('#sort-select');
+const spanNbRecentProducts=document.querySelector('#nbNewProducts');
 
 
 
@@ -73,6 +75,7 @@ const fetchProducts = async (page = 1, size = 12) => {
 const renderProducts = products => {
   const fragment = document.createDocumentFragment();
   const div = document.createElement('div');
+  const nb=products.length;
   const template = products
     .map(product => {
       return `
@@ -139,6 +142,7 @@ const renderIndicators = pagination => {
 
   spanNbProducts.innerHTML = count;
 };
+
 /*permet l'affichage des prduits des indicateur */
 const render = (products, pagination) => {
   renderbrands(products);
@@ -205,10 +209,10 @@ const filterdate=(products) => {
 
 sectiondate.addEventListener('click',event => {
   if(sectiondate.checked==true){
-    renderProducts(filterdate(currentProducts));
+    renderProducts(filterdate(currentProducts))
   }
   else{
-    renderProducts(currentProducts);
+    renderProducts(currentProducts)
   }
 
 });
@@ -220,10 +224,64 @@ const filterprice=(products) => {
 
 reasonableprice.addEventListener('click',event => {
   if(reasonableprice.checked==true){
-    renderProducts(filterprice(currentProducts));
+    renderProducts(filterprice(currentProducts))
   }
   else{
-    renderProducts(currentProducts);
+    renderProducts(currentProducts)
   }
 
 });
+/*features 5 et 6*/
+function compare_price( a, b ) {
+  if ( a.price < b.price ){
+    return -1;
+  }
+  if ( a.price > b.price ){
+    return 1;
+  }
+  return 0;
+}
+
+const sorted=(products,value)=>{
+  switch(value){
+  case 'price-asc':
+    return products.sort(function(a, b){return a.price-b.price});
+  break;
+  case 'price-desc':
+  return products.sort(function(a, b){return b.price-a.price});
+  break;
+  case'date-asc':
+  return products.sort(function(a, b){return Date.parse(a.released)-Date.parse(b.released)});
+  break;
+  case 'date-desc':
+  return products.sort(function(a, b){return Date.parse(b.released)-Date.parse(a.released)});
+  break;
+  default:
+  return products;
+
+}
+
+
+}
+
+sortselect.addEventListener('change', event => {
+  renderProducts(sorted(currentProducts,event.target.value));
+});
+
+/*features 9*/
+let myproducts = [];
+let mypagination = {};
+
+const setmyProducts = ({result, meta}) => {
+  myproducts = result;
+  mypagination = meta;
+};
+
+fetchProducts(1, 139).then(setmyProducts).then(() =>{
+  let recentcount = 0;
+  for (let i = 0; i<139; i++){
+      if (Date.parse(myproducts[i].released) > Date.now() - 1000*3600*24*30){
+          recentcount+=1;
+      };
+  }
+    spanNbRecentProducts.innerHTML = recentcount;});
