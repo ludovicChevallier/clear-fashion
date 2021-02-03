@@ -1,6 +1,8 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-/*'https://www.dedicatedbrand.com/en/men/news'*/
+
+/*https://mudjeans.eu/collections/men*/
+
 /**
  * Parse webpage e-shop
  * @param  {String} data - html response
@@ -9,22 +11,25 @@ const cheerio = require('cheerio');
 const parse = data => {
   const $ = cheerio.load(data);
 
-  return $('.productList-container .productList')
-    .map((i, element) => {
-      const name = $(element)
-        .find('.productList-title')
-        .text()
-        .trim()
-        .replace(/\s/g, ' ');
-      const price = parseInt(
-        $(element)
-          .find('.productList-price')
-          .text()
-      );
+  return $('.content-row .product-link ')
+  .map((i, element) => {
+    const name = $(element)
+      .find(' .product-title')
+      .text()
+      .trim()
+      .replace(/\s/g, ' ');
+    let price = $(element)
+      .find('.row .product-price:first')
+      .text();
+      /*prend seulement ce qu'il y'a entre le dollar et la fin*/
+      price = price.substring(
+        price.lastIndexOf('€') + 1,
+        price.length - 1
+  )
 
-      return {name, price};
-    })
-    .get();
+    return {name, price};
+  })
+  .get();
 };
 
 /**

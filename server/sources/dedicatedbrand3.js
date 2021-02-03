@@ -1,6 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-/*'https://www.dedicatedbrand.com/en/men/news'*/
+
+/*https://adresse.paris/602-nouveautes*/
 /**
  * Parse webpage e-shop
  * @param  {String} data - html response
@@ -9,16 +10,13 @@ const cheerio = require('cheerio');
 const parse = data => {
   const $ = cheerio.load(data);
 
-  return $('.productList-container .productList')
+  return $('.product_list.grid.row .product-container')
     .map((i, element) => {
       const name = $(element)
-        .find('.productList-title')
-        .text()
-        .trim()
-        .replace(/\s/g, ' ');
+        .find(' .product-name').attr('title');
       const price = parseInt(
         $(element)
-          .find('.productList-price')
+          .find(' .price.product-price')
           .text()
       );
 
