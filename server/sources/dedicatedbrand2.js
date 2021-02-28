@@ -26,7 +26,7 @@ const parse = data => {
         price.lastIndexOf('€') + 1,
         price.length - 1
   )
-
+    console.log(name)
     return {name, price};
   })
   .get();
