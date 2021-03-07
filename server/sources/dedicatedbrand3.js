@@ -7,6 +7,7 @@ const cheerio = require('cheerio');
  * @param  {String} data - html response
  * @return {Array} products
  */
+const brands="adresseParis"
 const parse = data => {
   const $ = cheerio.load(data);
 
@@ -19,8 +20,8 @@ const parse = data => {
           .find(' .price.product-price')
           .text()
       );
-
-      return {name, price};
+      
+      return {name, price,brands};
     })
     .get();
 };

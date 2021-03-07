@@ -27,7 +27,8 @@ const parse = data => {
         price.length - 1
   )
     console.log(name)
-    return {name, price};
+    const brands="mudjeans"
+    return {name, price,brands};
   })
   .get();
 };

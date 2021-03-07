@@ -32,7 +32,8 @@ const parse = data => {
     .map(element => { 
       const name = element.name;
       const price = element.price.priceAsNumber;
-      return {name, price};
+      const brands="dedicatedbrand";
+      return {name, price,brands};
     })
 
     
