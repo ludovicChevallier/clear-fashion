@@ -21,14 +21,46 @@ const ajoutDB =async()=>{
 }
 const   request = async()=>{
     try{
-        brand="adresseParis"
+        brands="dedicatedbrand"
         const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
         const db =  client.db(MONGODB_DB_NAME);
         const collection = db.collection('produit');
-        const products = await collection.find({brand}).toArray();;
+        const products = await collection.find({brands}).toArray();;
         console.log(products);
     }catch(error){
         console.error(error);
     }
 }
-request()
+
+const   request2 = async()=>{
+    try{
+        
+        const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
+        const db =  client.db(MONGODB_DB_NAME);
+        const collection = db.collection('produit');
+        const products = await collection.find({"price":{"$gt":40}}).toArray();;
+        console.log(products);
+    }catch(error){
+        console.error(error);
+    }
+}
+
+const   request3 = async()=>{
+    try{
+        
+        const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
+        const db =  client.db(MONGODB_DB_NAME);
+        const collection = db.collection('produit');
+        const products = await collection.aggregate({"$group":{"_id":"$brands","res":{"$sum" : 1}}}).toArray()
+        .then(res => {
+          res.forEach(order => console.log(JSON.stringify(order)));
+        }).catch(err => {
+          console.log("Error: Update unsuccessfull.")
+        })
+        //console.log("request 3");
+        //console.log(products);
+    }catch(error){
+        console.error(error);
+    }
+}
+request3()
