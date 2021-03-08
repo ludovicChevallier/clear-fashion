@@ -3,8 +3,8 @@ const {MongoClient} = require('mongodb');
 const fs = require('fs');
 
 const MONGODB_DB_NAME = 'clearfashion';
-const MONGODB_COLLECTION = 'products';
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_COLLECTION = 'product';
+const MONGODB_URI = 'mongodb+srv://ludovic:1234@clustercf.ccda6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 
 let client = null;
 let database = null;
@@ -65,7 +65,7 @@ module.exports.find = async query => {
     const db = await getDB();
     const collection = db.collection(MONGODB_COLLECTION);
     const result = await collection.find(query).toArray();
-
+    //console.log(result)
     return result;
   } catch (error) {
     console.error('🚨 collection.find...', error);

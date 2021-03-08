@@ -25,7 +25,7 @@ const   request = async()=>{
         const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
         const db =  client.db(MONGODB_DB_NAME);
         const collection = db.collection('produit');
-        const products = await collection.find({brands}).toArray();;
+        const products = await collection.find({brands}).toArray();
         console.log(products);
     }catch(error){
         console.error(error);
@@ -38,7 +38,7 @@ const   request2 = async()=>{
         const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
         const db =  client.db(MONGODB_DB_NAME);
         const collection = db.collection('produit');
-        const products = await collection.find({"price":{"$gt":40}}).toArray();;
+        const products = await collection.find({"price":{"$gt":40}}).toArray();
         console.log(products);
     }catch(error){
         console.error(error);
@@ -51,14 +51,10 @@ const   request3 = async()=>{
         const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
         const db =  client.db(MONGODB_DB_NAME);
         const collection = db.collection('produit');
-        const products = await collection.aggregate({"$group":{"_id":"$brands","res":{"$sum" : 1}}}).toArray()
-        .then(res => {
-          res.forEach(order => console.log(JSON.stringify(order)));
-        }).catch(err => {
-          console.log("Error: Update unsuccessfull.")
-        })
-        //console.log("request 3");
-        //console.log(products);
+        var mysort = { price: 1 };
+        const products = await collection.find().sort(mysort).toArray();
+        console.log("request 3");
+        console.log(products);
     }catch(error){
         console.error(error);
     }
