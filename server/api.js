@@ -29,9 +29,15 @@ app.get('/products/:id',async (request,response)=>{
     response.send({"res":"id not found"});
   }
 })
-app.get('/products/search', (request, response) => {
-  console.log(request)
-  response.send({'ack': true});
+app.get('/productssearch', async(request, response) => {  
+  limit = request.query.limit;
+  brand = request.query.brand;
+  price = parseInt( request.query.price );
+  console.log(brand,limit,price)
+
+  products = await db.find({brand: brand, price:{$lte: price} })
+  console.log(products)
+  response.send({'ack': products});
 });
 app.listen(PORT);
 console.log(`📡 Running on port ${PORT}`);
