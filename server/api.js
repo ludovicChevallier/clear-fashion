@@ -17,26 +17,40 @@ app.options('*', cors());
 app.get('/', (request, response) => {
   response.send({'ack': true});
 });
-app.get('/products/search', async(request, response) => {  
+app.get('/products/search', async(request, response) => { 
+  let prod_limit=[] 
   limit = request.query.limit;
   brand = request.query.brand;
   price = parseInt( request.query.price );
   console.log(brand,limit,price)
-
-  products = await db.find({brand: brand, price:{$lte: price} })
-  if(products.length>0){
-    let prod_limit=[]
-    for (var i=0;i<limit;i++ ){
-      if(i<products.length){
-        prod_limit.push(products[i])
-      }
-
-    }
-    console.log(products)
-    response.send( prod_limit);
-  }else{
-    response.send({'ack': "product not found"});
+  if(request.query.brand && request.query.price){
+    products = await db.find({brand: brand, price:{$lte: price} });
   }
+  else if(request.query.brand){
+    products = await db.find({brand: brand});
+  }
+  else if(request.query.price){
+    products = await db.find({price:{$lte: price} });
+  }
+  else{
+    products= await db.find();
+  }
+    if(!request.query.limit){
+      limit=12
+    }
+    if(products.length>0){
+      
+      for (var i=0;i<limit;i++ ){
+        if(i<products.length){
+          prod_limit.push(products[i])
+        }
+
+      }
+    }else{
+      response.send({'ack': "product not found"});
+    }
+  console.log(products)
+  response.send( prod_limit);
 });
 app.get('/products/:id',async (request,response)=>{
   _id=request.params.id;
