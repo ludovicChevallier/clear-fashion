@@ -20,7 +20,7 @@ app.get('/', (request, response) => {
 app.get('/products/:id',async (request,response)=>{
   _id=request.params.id;
   res=await db.find({_id});
-  if(res!=null){
+  if(res.length>0){
   console.log(res);
   response.send(res);
   }
@@ -36,8 +36,19 @@ app.get('/productssearch', async(request, response) => {
   console.log(brand,limit,price)
 
   products = await db.find({brand: brand, price:{$lte: price} })
-  console.log(products)
-  response.send({'ack': products});
+  if(products.length>0){
+    let prod_limit=[]
+    for (var i=0;i<limit;i++ ){
+      if(i<products.length){
+        prod_limit.push(products[i])
+      }
+
+    }
+    console.log(products)
+    response.send( prod_limit);
+  }else{
+    response.send({'ack': "product not found"});
+  }
 });
 app.listen(PORT);
 console.log(`📡 Running on port ${PORT}`);
