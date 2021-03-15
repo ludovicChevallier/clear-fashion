@@ -17,19 +17,7 @@ app.options('*', cors());
 app.get('/', (request, response) => {
   response.send({'ack': true});
 });
-app.get('/products/:id',async (request,response)=>{
-  _id=request.params.id;
-  res=await db.find({_id});
-  if(res.length>0){
-  console.log(res);
-  response.send(res);
-  }
-  else{
-    console.log("id not found")
-    response.send({"res":"id not found"});
-  }
-})
-app.get('/productssearch', async(request, response) => {  
+app.get('/products/search', async(request, response) => {  
   limit = request.query.limit;
   brand = request.query.brand;
   price = parseInt( request.query.price );
@@ -50,5 +38,18 @@ app.get('/productssearch', async(request, response) => {
     response.send({'ack': "product not found"});
   }
 });
+app.get('/products/:id',async (request,response)=>{
+  _id=request.params.id;
+  res=await db.find({_id});
+  if(res.length>0){
+  console.log(res);
+  response.send(res);
+  }
+  else{
+    console.log("id not found")
+    response.send({"res":"id not found"});
+  }
+})
+
 app.listen(PORT);
 console.log(`📡 Running on port ${PORT}`);
