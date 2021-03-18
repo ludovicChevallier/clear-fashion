@@ -20,37 +20,36 @@ app.get('/', (request, response) => {
 app.get('/products/search', async(request, response) => { 
   
   let prod_limit=[] ;
-  limit = request.query.limit;
+  limit =parseInt( request.query.limit);
+  if(!request.query.limit){
+    limit=12
+  }
+  pages =parseInt(request.query.pages);
+  if(!request.query.pages){
+    pages=1
+  }
   brand = request.query.brand;
   price = parseInt( request.query.price );
-  console.log(brand,limit,price)
+  console.log(pages,limit)
   if(request.query.brand && request.query.price){
-    products = await db.find({brand: brand, price:{$lte: price} });
+    products = await db.find({brand: brand, price:{$lte: price} },pages,limit);
   }
   else if(request.query.brand){
-    products = await db.find({brand: brand});
+    products = await db.find({brand: brand},pages,limit);
   }
   else if(request.query.price){
-    products = await db.find({price:{$lte: price} });
+    products = await db.find({price:{$lte: price},pages,limit });
   }
   else{
-    products= await db.find();
+    products= await db.find({},pages,limit);
   }
-    if(!request.query.limit){
-      limit=12
-    }
-    if(products.length>0){
-      
-      for (var i=0;i<limit;i++ ){
-        if(i<products.length){
-          prod_limit.push(products[i])
-        }
-
-      }
-    }else{
-      response.send({'ack': "product not found"});
-    }
-  response.send( prod_limit);
+    console.log(products);
+  if(products.length>0){
+    response.send( products);
+  }else{
+    response.send({'ack': "product not found"});
+  }
+  
 });
 app.get('/products/:id',async (request,response)=>{
   _id=request.params.id;

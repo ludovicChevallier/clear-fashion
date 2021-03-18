@@ -6,7 +6,7 @@ let currentProducts = [];
 let currentPagination = {};
 let currentBrands=[];
 let pagination=0
-
+let value=1
 // inititiqte selectors
 const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
@@ -42,7 +42,7 @@ const setCurrentProducts = (result) => {
  /*si tous se passe bien retourne les donnés plus les données de l'api*/
 const fetchProducts = async (page = 1, size = 12) => {
 
-  let text=`https://server-sand-nu.vercel.app/products/search?limit=${size}`;
+  let text=`https://server-sand-nu.vercel.app/products/search?limit=${size}&pages=${page}`;
   try {
     const response = await fetch(
       text
@@ -136,22 +136,23 @@ const filterAll = ()=> {
  * @param  {Object} pagination
  */
  /*indique dans le selecteur combien de value on veur*/
- /*
+ 
 const renderPagination = pagination => {
-  const {currentPage, pageCount} = pagination;
+  const pageCount=parseInt(pagination.length/parseInt(selectShow.value))
   const options = Array.from(
     {'length': pageCount},
     (value, index) => `<option value="${index + 1}">${index + 1}</option>`
   ).join('');
 
 
-
+  
   selectPage.innerHTML = options;
-  selectPage.selectedIndex = currentPage - 1;
+  selectPage.selectedIndex =value-1 ;
+
 
 
 };
-*/
+
 
 /**
  * Render page selector
@@ -168,7 +169,7 @@ const render = async(products) => {
   if(pagination==0){
    pagination=await fetchProducts(1,10000)
   }
-  /*renderPagination(pagination);*/
+  renderPagination(pagination);
   renderIndicators(pagination.length);
   renderNbNeWproducts(pagination);
 };
@@ -197,7 +198,7 @@ const filterbrand=(products,brand) =>{
 selectShow.addEventListener('change', event => {
   fetchProducts(1,parseInt(event.target.value))
     .then(setCurrentProducts)
-    .then(() => render(currentProducts)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value="");
+    .then(() => render(currentProducts)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value="",value=1);
 });
 
 document.addEventListener('DOMContentLoaded', () =>
@@ -211,9 +212,10 @@ document.addEventListener('DOMContentLoaded', () =>
 /*currentPaginantion contient le nombre de produit voulant être affiché*/
 /*affiche les produits en fonctions du nombre de page choisie*/
 selectPage.addEventListener('change', event => {
+  value=event.target.value
   fetchProducts( parseInt(event.target.value),)
   .then(setCurrentProducts)
-  .then(() => render(currentProducts,)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value="");
+  .then(() => render(currentProducts)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value="");
 });
 
 /*features 2*/
@@ -241,7 +243,7 @@ sectiondate.addEventListener('click',event => {
 /*features 4*/
 
 const filterprice=(products) => {
-  return products.filter(product =>product.price<30);
+  return products.filter(product =>product.price<50);
 };
 
 reasonableprice.addEventListener('click',event => {
