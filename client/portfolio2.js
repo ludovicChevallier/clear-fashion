@@ -170,6 +170,7 @@ const render = async(products) => {
   }
   /*renderPagination(pagination);*/
   renderIndicators(pagination.length);
+  renderNbNeWproducts(pagination);
 };
 /*on retourne les produits qui vont être affiché */
 const filterbrand=(products,brand) =>{
@@ -291,20 +292,21 @@ sortselect.addEventListener('change', event => {
 
 /*features 9*/
 
-let myproducts = [];
-let mypagination = {};
 
-const setmyProducts = ({result, meta}) => {
-  myproducts = result;
-  mypagination = meta;
-};
-
-fetchProducts(1, 139).then(setmyProducts).then(() =>{
+const renderNbNeWproducts =(products)=>{
   let recentcount = 0;
-  for (let i = 0; i<139; i++){
-      if (Date.parse(myproducts[i].released) > Date.now() - 1000*3600*24*30){
+  for (let i = 0; i<products.length; i++){
+      if (Date.parse(products[i].released) > Date.now() - 1000*3600*24*30){
           recentcount+=1;
-      };
+      }
   }
-    spanNbRecentProducts.innerHTML = recentcount;});
+    spanNbRecentProducts.innerHTML = recentcount;
+    const YoungestProduct=sorted(products,'date-desc')[0]
+    console.log(YoungestProduct.released)
+    document.querySelector('#NewProduct').innerHTML=YoungestProduct.released
+
+}
+
+
+    
 
