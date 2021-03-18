@@ -1,6 +1,7 @@
 /* eslint-disable no-console, no-process-exit */
 const dedicatedbrand = require('./sites/dedicatedbrand');
 const loom = require('./sites/loom');
+const adresseParis = require('./sites/adresseParis');
 const db = require('./db');
 
 async function sandbox () {
@@ -18,6 +19,20 @@ async function sandbox () {
       console.log(`🕵️‍♀️  scraping ${page}`);
 
       let results = await dedicatedbrand.scrape(page);
+
+      console.log(`👕 ${results.length} products found`);
+
+      products.push(results);
+    }
+    pages = [
+      'https://adresse.paris/630-toute-la-collection?id_category=630&n=109'
+    ];
+
+    console.log(`🕵️‍♀️  browsing ${pages.length} pages with for...of`);
+    for (let page of pages) {
+      console.log(`🕵️‍♀️  scraping ${page}`);
+
+      let results = await adresseParis.scrape(page);
 
       console.log(`👕 ${results.length} products found`);
 

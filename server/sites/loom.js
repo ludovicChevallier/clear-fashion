@@ -1,6 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const {'v5': uuidv5} = require('uuid');
+let today = new Date().toISOString().slice(0, 10)
 
 /**
  * Parse webpage restaurant
@@ -19,6 +20,7 @@ const parse = data => {
       return {
         link,
         'brand': 'loom',
+        'released':today,
         'price': parseInt(
           $(element)
             .find('.money')

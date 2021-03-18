@@ -64,7 +64,7 @@ module.exports.find = async query => {
   try {
     const db = await getDB();
     const collection = db.collection(MONGODB_COLLECTION);
-    const result = await collection.find(query).toArray();
+    const result = await collection.find(query).sort({price:1}).toArray();
     //console.log(result)
     return result;
   } catch (error) {

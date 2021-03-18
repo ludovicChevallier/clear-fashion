@@ -2,7 +2,7 @@ const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
 const db= require('./db/index.js')
-const PORT = 8092;
+const PORT = 8091;
 
 const app = express();
 
@@ -18,7 +18,8 @@ app.get('/', (request, response) => {
   response.send({'ack': true});
 });
 app.get('/products/search', async(request, response) => { 
-  let prod_limit=[] 
+  
+  let prod_limit=[] ;
   limit = request.query.limit;
   brand = request.query.brand;
   price = parseInt( request.query.price );
@@ -49,7 +50,6 @@ app.get('/products/search', async(request, response) => {
     }else{
       response.send({'ack': "product not found"});
     }
-  console.log(products)
   response.send( prod_limit);
 });
 app.get('/products/:id',async (request,response)=>{

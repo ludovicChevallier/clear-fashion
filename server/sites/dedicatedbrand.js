@@ -1,6 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const {'v5': uuidv5} = require('uuid');
+let today = new Date().toISOString().slice(0, 10)
 
 /**
  * Parse webpage restaurant
@@ -15,25 +16,28 @@ const parse = data => {
       const link = `https://www.dedicatedbrand.com${$(element)
         .find('.productList-link')
         .attr('href')}`;
-
-      return {
-        link,
-        'brand': 'dedicated',
-        'price': parseInt(
-          $(element)
-            .find('.productList-price')
+      if(!Number.isNaN(parseInt($(element).find('.productList-price').text())))
+      {
+        return {
+          link,
+          'brand': 'dedicated',
+          'released':today,
+          'price': parseInt(
+            $(element)
+              .find('.productList-price')
+              .text()
+          ),
+          'name': $(element)
+            .find('.productList-title')
             .text()
-        ),
-        'name': $(element)
-          .find('.productList-title')
-          .text()
-          .trim()
-          .replace(/\s/g, ' '),
-        'photo': $(element)
-          .find('.productList-image img')
-          .attr('src'),
-        '_id': uuidv5(link, uuidv5.URL)
-      };
+            .trim()
+            .replace(/\s/g, ' '),
+          'photo': $(element)
+            .find('.productList-image img')
+            .attr('src'),
+          '_id': uuidv5(link, uuidv5.URL)
+        };
+     }
     })
     .get();
 };

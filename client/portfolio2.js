@@ -5,6 +5,7 @@
 let currentProducts = [];
 let currentPagination = {};
 let currentBrands=[];
+let pagination=0
 
 // inititiqte selectors
 const selectShow = document.querySelector('#show-select');
@@ -41,9 +42,10 @@ const setCurrentProducts = (result) => {
  /*si tous se passe bien retourne les donnés plus les données de l'api*/
 const fetchProducts = async (page = 1, size = 12) => {
 
+  let text=`https://server-sand-nu.vercel.app/products/search?limit=${size}`;
   try {
     const response = await fetch(
-      `https://server-sand-nu.vercel.app/products/search?limit=${size}`
+      text
     );
 
     const body = await response.json();
@@ -83,6 +85,7 @@ const renderProducts = products => {
         <span>${product.brand}</span>
         <a href="${product.link}">${product.name}</a>
         <span>${product.price}</span>
+        <span>${product.released}</span>
       </div>
     `;
   })
@@ -110,6 +113,22 @@ const renderbrands=products =>{
   sectionbrand.innerHTML=options2;
   sectionbrand.selectedIndex = 0;
 };
+const filterAll = ()=> {
+
+  let productsFound = currentProducts;
+  if(reasonableprice.checked==true){
+   productsFound = filterprice(productsFound);
+  }
+  if(sectiondate.checked==true){
+    productsFound = filterdate(productsFound)
+  }
+  if(sectionbrand.value!=""){
+    productsFound = filterbrand(productsFound,sectionbrand.value)
+  }
+  productsFound=sorted(productsFound,sortselect.value)
+  return productsFound
+
+}
 
 
 /**
@@ -117,6 +136,7 @@ const renderbrands=products =>{
  * @param  {Object} pagination
  */
  /*indique dans le selecteur combien de value on veur*/
+ /*
 const renderPagination = pagination => {
   const {currentPage, pageCount} = pagination;
   const options = Array.from(
@@ -131,23 +151,25 @@ const renderPagination = pagination => {
 
 
 };
+*/
 
 /**
  * Render page selector
  * @param  {Object} pagination
  */
 const renderIndicators = pagination => {
-  const {count} = pagination;
-
-  spanNbProducts.innerHTML = count;
+  spanNbProducts.innerHTML = pagination;
 };
 
 /*permet l'affichage des prduits des indicateur */
-const render = (products, pagination) => {
+const render = async(products) => {
   renderbrands(products);
   renderProducts(products);
-  renderPagination(pagination);
-  renderIndicators(pagination);
+  if(pagination==0){
+   pagination=await fetchProducts(1,10000)
+  }
+  /*renderPagination(pagination);*/
+  renderIndicators(pagination.length);
 };
 /*on retourne les produits qui vont être affiché */
 const filterbrand=(products,brand) =>{
@@ -172,9 +194,9 @@ const filterbrand=(products,brand) =>{
  /*2: ensuite retourne les meta et result */
  /*3:puis on affiche le tout avec render*/
 selectShow.addEventListener('change', event => {
-  fetchProducts(parseInt(event.target.value))
+  fetchProducts(1,parseInt(event.target.value))
     .then(setCurrentProducts)
-    .then(() => render(currentProducts));
+    .then(() => render(currentProducts)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value="");
 });
 
 document.addEventListener('DOMContentLoaded', () =>
@@ -190,43 +212,43 @@ document.addEventListener('DOMContentLoaded', () =>
 selectPage.addEventListener('change', event => {
   fetchProducts( parseInt(event.target.value),)
   .then(setCurrentProducts)
-  .then(() => render(currentProducts,));
+  .then(() => render(currentProducts,)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value="");
 });
 
 /*features 2*/
 
 sectionbrand.addEventListener('change', event => {
-  renderProducts(filterbrand(currentProducts,event.target.value));
+  renderProducts(filterAll());
 });
 /*features 3*/
 
-/*
+
 const filterdate=(products) => {
   return products.filter(product =>Date.parse(product.released) > Date.now() - 1000*3600*24*30);
 };
 
 sectiondate.addEventListener('click',event => {
   if(sectiondate.checked==true){
-    renderProducts(filterdate(currentProducts))
+    renderProducts(filterAll())
   }
   else{
-    renderProducts(currentProducts)
+    renderProducts(filterAll())
   }
 
 });
-*/
+
 /*features 4*/
 
 const filterprice=(products) => {
-  return products.filter(product =>product.price<50);
+  return products.filter(product =>product.price<30);
 };
 
 reasonableprice.addEventListener('click',event => {
   if(reasonableprice.checked==true){
-    renderProducts(filterprice(currentProducts))
+    renderProducts(filterAll())
   }
   else{
-    renderProducts(currentProducts)
+    renderProducts(filterAll())
   }
 
 });
@@ -264,11 +286,11 @@ const sorted=(products,value)=>{
 }
 
 sortselect.addEventListener('change', event => {
-  renderProducts(sorted(currentProducts,event.target.value));
+  renderProducts(filterAll());
 });
 
 /*features 9*/
-/*
+
 let myproducts = [];
 let mypagination = {};
 
@@ -285,4 +307,4 @@ fetchProducts(1, 139).then(setmyProducts).then(() =>{
       };
   }
     spanNbRecentProducts.innerHTML = recentcount;});
-*/
+

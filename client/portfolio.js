@@ -112,6 +112,25 @@ const renderbrands=products =>{
   sectionbrand.selectedIndex = 0;
 };
 
+/**
+ * Filter using all interface params ( sort,reasonable price, brands? recentely released )
+ */
+const filterAll = ()=> {
+
+  let productsFound = currentProducts;
+  if(reasonableprice.checked==true){
+   productsFound = filterprice(productsFound);
+  }
+  if(sectiondate.checked==true){
+    productsFound = filterdate(productsFound)
+  }
+  if(sectionbrand.value!=""){
+    productsFound = filterbrand(productsFound,sectionbrand.value)
+  }
+  productsFound=sorted(productsFound,sortselect.value)
+  return productsFound
+
+}
 
 /**
  * Render page selector
@@ -175,7 +194,7 @@ const filterbrand=(products,brand) =>{
 selectShow.addEventListener('change', event => {
   fetchProducts(currentPagination.currentPage, parseInt(event.target.value))
     .then(setCurrentProducts)
-    .then(() => render(currentProducts, currentPagination));
+    .then(() => render(currentProducts, currentPagination)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value="");
 });
 
 document.addEventListener('DOMContentLoaded', () =>
@@ -191,25 +210,25 @@ document.addEventListener('DOMContentLoaded', () =>
 selectPage.addEventListener('change', event => {
   fetchProducts( parseInt(event.target.value),currentPagination.pageSize)
   .then(setCurrentProducts)
-  .then(() => render(currentProducts, currentPagination));
+  .then(() => render(currentProducts, currentPagination)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value="");
   console.log(currentPagination);
 });
 
 /*features 2*/
 
 sectionbrand.addEventListener('change', event => {
-  renderProducts(filterbrand(currentProducts,event.target.value));
+  renderProducts(filterAll());
 });
 /*features 3*/
 
 
 const filterdate=(products) => {
-  return products.filter(product =>Date.parse(product.released) > Date.now() - 1000*3600*24*30);
+  return products.filter(product =>Date.parse(product.released) > Date.now() - 1000*3600*24*90);
 };
 
 sectiondate.addEventListener('click',event => {
   if(sectiondate.checked==true){
-    renderProducts(filterdate(currentProducts))
+    renderProducts(filterAll())
   }
   else{
     renderProducts(currentProducts)
@@ -224,7 +243,7 @@ const filterprice=(products) => {
 
 reasonableprice.addEventListener('click',event => {
   if(reasonableprice.checked==true){
-    renderProducts(filterprice(currentProducts))
+    renderProducts(filterAll())
   }
   else{
     renderProducts(currentProducts)
@@ -265,7 +284,7 @@ const sorted=(products,value)=>{
 }
 
 sortselect.addEventListener('change', event => {
-  renderProducts(sorted(currentProducts,event.target.value));
+  renderProducts(filterAll());
 });
 
 /*features 9*/
@@ -280,8 +299,10 @@ const setmyProducts = ({result, meta}) => {
 fetchProducts(1, 139).then(setmyProducts).then(() =>{
   let recentcount = 0;
   for (let i = 0; i<139; i++){
-      if (Date.parse(myproducts[i].released) > Date.now() - 1000*3600*24*30){
+      if (Date.parse(myproducts[i].released) > Date.now() - 1000*3600*24*90){
           recentcount+=1;
       };
   }
     spanNbRecentProducts.innerHTML = recentcount;});
+
+
