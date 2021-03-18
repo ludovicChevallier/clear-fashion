@@ -138,7 +138,7 @@ const filterAll = ()=> {
  /*indique dans le selecteur combien de value on veur*/
  
 const renderPagination = pagination => {
-  const pageCount=parseInt(pagination.length/parseInt(selectShow.value))
+  const pageCount=Math.ceil(pagination.length/parseInt(selectShow.value))
   const options = Array.from(
     {'length': pageCount},
     (value, index) => `<option value="${index + 1}">${index + 1}</option>`
@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () =>
 /*affiche les produits en fonctions du nombre de page choisie*/
 selectPage.addEventListener('change', event => {
   value=event.target.value
-  fetchProducts( parseInt(event.target.value),)
+  fetchProducts( parseInt(event.target.value),parseInt(selectShow.value))
   .then(setCurrentProducts)
   .then(() => render(currentProducts)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value="");
 });
