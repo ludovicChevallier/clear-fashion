@@ -31,21 +31,23 @@ app.get('/products/search', async(request, response) => {
   brand = request.query.brand;
   price = parseInt( request.query.price );
   console.log(pages,limit)
+  let products =[]
+  let meta=0
   if(request.query.brand && request.query.price){
-    products = await db.find({brand: brand, price:{$lte: price} },pages,limit);
+    res = await db.find({brand: brand, price:{$lte: price} },pages,limit);
   }
   else if(request.query.brand){
-    products = await db.find({brand: brand},pages,limit);
+    res = await db.find({brand: brand},pages,limit);
   }
   else if(request.query.price){
-    products = await db.find({price:{$lte: price},pages,limit });
+    res = await db.find({price:{$lte: price},pages,limit });
   }
   else{
-    products= await db.find({},pages,limit);
+    res= await db.find({},pages,limit);
   }
-    console.log(products);
-  if(products.length>0){
-    response.send( products);
+    console.log(res.result);
+  if(res.result.length>0){
+    response.send({"products":res.result,"meta":res.meta});
   }else{
     response.send({'ack': "product not found"});
   }
@@ -53,10 +55,10 @@ app.get('/products/search', async(request, response) => {
 });
 app.get('/products/:id',async (request,response)=>{
   _id=request.params.id;
-  res=await db.find({_id});
-  if(res.length>0){
-  console.log(res);
-  response.send(res);
+  res=await db.find({_id},1,1);
+  if(res.result.length>0){
+  console.log(res.result);
+  response.send(res.result);
   }
   else{
     console.log("id not found")

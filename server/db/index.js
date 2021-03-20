@@ -66,8 +66,9 @@ module.exports.find = async (query,pages,limit) => {
     const db = await getDB();
     const collection = db.collection(MONGODB_COLLECTION);
     const result = await collection.find(query).sort({price:1}).skip(skips).limit(limit).toArray();
+    const meta=await collection.countDocuments();
     //console.log(result)
-    return result;
+    return {result,meta};
   } catch (error) {
     console.error('🚨 collection.find...', error);
     return null;

@@ -1,6 +1,7 @@
 // Invoking strict mode https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode#invoking_strict_mode
 'use strict';
 
+
 // current products on the page
 let currentProducts = [];
 let currentPagination = {};
@@ -27,9 +28,10 @@ const spanNbRecentProducts=document.querySelector('#nbNewProducts');
  * @param {Object} meta - pagination meta info
  */
  /*meta est le contenu que retourne l'api du genre le numéro de la page et le nombre de product*/
-const setCurrentProducts = (result) => {
+const setCurrentProducts = ({result,meta}) => {
     console.log(result)
-  currentProducts = result;
+    currentProducts = result;
+    currentPagination=meta
 };
 
 /**
@@ -43,6 +45,7 @@ const setCurrentProducts = (result) => {
 const fetchProducts = async (page = 1, size = 12) => {
 
   let text=`https://server-sand-nu.vercel.app/products/search?limit=${size}&pages=${page}`;
+  // let text=`http://localhost:8091/products/search?limit=${size}&pages=${page}`
   try {
     const response = await fetch(
       text
@@ -53,13 +56,13 @@ const fetchProducts = async (page = 1, size = 12) => {
     if (body=={'ack': "product not found"}) {
 
       console.error(body);
-      return {currentProducts};
+      return {currentProducts,currentPagination};
     }
     console.log(body);
-    return body;
+    return {"result":body.products,"meta":body.meta};
   } catch (error) {
     console.error(error);
-    return {currentProducts};
+    return {currentProducts,currentPagination};
   }
 };
 
@@ -75,6 +78,7 @@ const fetchProducts = async (page = 1, size = 12) => {
 
 
 const renderProducts = products => {
+  console.log(products)
   const fragment = document.createDocumentFragment();
   const div = document.createElement('div');
   const nb=products.length;
@@ -114,7 +118,7 @@ const renderbrands=products =>{
   sectionbrand.selectedIndex = 0;
 };
 const filterAll = ()=> {
-
+  console.log(currentProducts)
   let productsFound = currentProducts;
   if(reasonableprice.checked==true){
    productsFound = filterprice(productsFound);
@@ -126,6 +130,7 @@ const filterAll = ()=> {
     productsFound = filterbrand(productsFound,sectionbrand.value)
   }
   productsFound=sorted(productsFound,sortselect.value)
+  document.querySelector('#nbProductDisplayed').innerHTML=productsFound.length
   return productsFound
 
 }
@@ -163,15 +168,17 @@ const renderIndicators = pagination => {
 };
 
 /*permet l'affichage des prduits des indicateur */
-const render = async(products) => {
+const render = async(products,currentPagination) => {
+  console.log(products)
   renderbrands(products);
   renderProducts(products);
   if(pagination==0){
-   pagination=await fetchProducts(1,10000)
+   pagination=await fetchProducts(1,currentPagination)
   }
-  renderPagination(pagination);
-  renderIndicators(pagination.length);
-  renderNbNeWproducts(pagination);
+  console.log(pagination)
+  renderPagination(pagination.result);
+  renderIndicators(pagination.meta);
+  renderNbNeWproducts(pagination.result);
 };
 /*on retourne les produits qui vont être affiché */
 const filterbrand=(products,brand) =>{
@@ -198,13 +205,13 @@ const filterbrand=(products,brand) =>{
 selectShow.addEventListener('change', event => {
   fetchProducts(1,parseInt(event.target.value))
     .then(setCurrentProducts)
-    .then(() => render(currentProducts)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value="",value=1);
+    .then(() => render(currentProducts,currentPagination)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value="",value=1);
 });
 
 document.addEventListener('DOMContentLoaded', () =>
   fetchProducts()
     .then(setCurrentProducts)
-    .then(() => render(currentProducts))
+    .then(() => render(currentProducts,currentPagination))
 );
 
 
@@ -215,7 +222,7 @@ selectPage.addEventListener('change', event => {
   value=event.target.value
   fetchProducts( parseInt(event.target.value),parseInt(selectShow.value))
   .then(setCurrentProducts)
-  .then(() => render(currentProducts)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value="");
+  .then(() => render(currentProducts,currentPagination)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value="");
 });
 
 /*features 2*/
@@ -289,6 +296,7 @@ const sorted=(products,value)=>{
 }
 
 sortselect.addEventListener('change', event => {
+  console.log(currentProducts)
   renderProducts(filterAll());
 });
 
@@ -306,7 +314,7 @@ const renderNbNeWproducts =(products)=>{
     const YoungestProduct=sorted(products,'date-desc')[0]
     console.log(YoungestProduct.released)
     document.querySelector('#NewProduct').innerHTML=YoungestProduct.released
-
+    document.querySelector('#nbProductDisplayed').innerHTML=currentProducts.length
 }
 
 
