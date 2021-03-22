@@ -133,6 +133,7 @@ const filterAll = ()=> {
   if(sectionbrand.value!=""){
     productsFound = filterbrand(productsFound,sectionbrand.value)
   }
+  renderpercentil(productsFound)
   productsFound=sorted(productsFound,sortselect.value)
   document.querySelector('#nbProductDisplayed').innerHTML=productsFound.length
   return productsFound
@@ -176,6 +177,7 @@ const render = async(products,currentPagination) => {
   console.log(products)
   renderbrands(products);
   renderProducts(products);
+  renderpercentil(products)
   if(pagination==0){
    pagination=await fetchProducts(1,currentPagination)
   }
@@ -322,6 +324,64 @@ const renderNbNeWproducts =(products)=>{
     console.log(YoungestProduct.released)
     document.querySelector('#NewProduct').innerHTML=YoungestProduct.released
     document.querySelector('#nbProductDisplayed').innerHTML=currentProducts.length
+}
+
+const renderpercentil=products=>{
+  let list_price=[]
+  list_price.push(
+    ...products.map(product=> {return product.price})
+  );
+
+  function Quartile(data, q) {
+    data=Array_Sort_Numbers(data);
+    var pos = ((data.length) - 1) * q;
+    var base = Math.floor(pos);
+    var rest = pos - base;
+    if( (data[base+1]!==undefined) ) {
+      return data[base] + rest * (data[base+1] - data[base]);
+    } else {
+      return data[base];
+    }
+  }
+  function Array_Sort_Numbers(inputarray){
+    return inputarray.sort(function(a, b) {
+      return a - b;
+    });
+  }
+  
+  function Array_Sum(t){
+     return t.reduce(function(a, b) { return a + b; }, 0); 
+  }
+  
+  function Array_Average(data) {
+    return Array_Sum(data) / data.length;
+  }
+  
+  function Array_Stdev(tab){
+     var i,j,total = 0, mean = 0, diffSqredArr = [];
+     for(i=0;i<tab.length;i+=1){
+         total+=tab[i];
+     }
+     mean = total/tab.length;
+     for(j=0;j<tab.length;j+=1){
+         diffSqredArr.push(Math.pow((tab[j]-mean),2));
+     }
+     return (Math.sqrt(diffSqredArr.reduce(function(firstEl, nextEl){
+              return firstEl + nextEl;
+            })/tab.length));  
+  }
+  if(list_price.length==0){
+    document.querySelector('#p50').innerHTML=0
+    document.querySelector('#p90').innerHTML=0
+    document.querySelector('#p95').innerHTML=0
+  }
+  else{
+    document.querySelector('#p50').innerHTML=Quartile(list_price,0.5)
+    document.querySelector('#p90').innerHTML=Quartile(list_price,0.9)
+    document.querySelector('#p95').innerHTML=Quartile(list_price,0.95)
+  }
+    
+
 }
 
 
