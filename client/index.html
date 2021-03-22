@@ -30,6 +30,9 @@
           <input type="checkbox" id="recentrelease" name="newrelease" >
           <label for="recentrelease"> By recently released</label>
         </span>
+        <span><input type="checkbox" id="favorite" >
+          <label for="recentrelease"> favorite</label>
+        </span>
         <div id="brand">
           <label for="brand-select">By brands:</label>
           <select name="brand" id="brand-select"> </select>
@@ -77,7 +80,7 @@
         <span id="NewProduct">2020-01-01</span>
       </div>
     </section>
-    <section>
+    <section id="fav-product">
       <h2>Products</h2>
     <table id="table-products">
       <thead>
@@ -86,6 +89,7 @@
         <th>price</th>
         <th>released</th>
         <th>photo</th>
+        <th>favorite</th>
       </thead>
       <tbody id="products"></tbody>
     </table>
