@@ -79,27 +79,31 @@ const fetchProducts = async (page = 1, size = 12) => {
 
 const renderProducts = products => {
   console.log(products)
-  const fragment = document.createDocumentFragment();
-  const div = document.createElement('div');
   const nb=products.length;
   const template = products
     .map(product => {
-      return `
-      <div class="product" id=${product._id}>
-        <span>${product.brand}</span>
-        <a href="${product.link}">${product.name}</a>
-        <span>${product.price}</span>
-        <span>${product.released}</span>
-      </div>
-    `;
-  })
-    .join('');
+      const tr=`
+      <tr id="${product._id}"> 
+        <td>${product.brand}</td>
+        <td>
+          <a href="${product.link}">${product.name}</a>
+        </td>
+        <td>${product.price}</td>
+        <td>${product.released}</td> `;
+      if(product.brand!="loom"){
+      return tr+`
+        <td><img src="${product.photo}"></td>
+      </tr>`;
+      }
+      else{
+        return tr +`
+          <td><img src="https:${product.photo}"></td>
+        </tr>`;
+      }
+  }).join('');
     /*ajoute les brands*/
 
-  div.innerHTML = template;
-  fragment.appendChild(div);
-  sectionProducts.innerHTML = '<h2>Products</h2>';
-  sectionProducts.appendChild(fragment);
+  sectionProducts.innerHTML=template;
 };
 /*on affiche ici les brands*/
 const renderbrands=products =>{
@@ -286,6 +290,9 @@ const sorted=(products,value)=>{
   break;
   case 'date-desc':
   return products.sort(function(a, b){return Date.parse(b.released)-Date.parse(a.released)});
+  break;
+  case "":
+  return  products.sort(function(a, b){return a.price-b.price});
   break;
   default:
   return products;
