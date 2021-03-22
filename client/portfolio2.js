@@ -401,9 +401,9 @@ const renderpercentil=products=>{
     document.querySelector('#p95').innerHTML=0
   }
   else{
-    document.querySelector('#p50').innerHTML=Quartile(list_price,0.5)
-    document.querySelector('#p90').innerHTML=Quartile(list_price,0.9)
-    document.querySelector('#p95').innerHTML=Quartile(list_price,0.95)
+    document.querySelector('#p50').innerHTML=Math.round(Quartile(list_price,0.5))
+    document.querySelector('#p90').innerHTML=Math.round(Quartile(list_price,0.9))
+    document.querySelector('#p95').innerHTML=Math.round(Quartile(list_price,0.95))
   }
 }
 table_product.addEventListener('click',function(e){

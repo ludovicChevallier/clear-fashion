@@ -6,9 +6,6 @@
     <link rel="stylesheet" href="css/clear-fashion.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        body {
-            font-size: 1.5em;
-        }
         .custom-checkbox input[type="checkbox"],
             .custom-checkbox .checked {
             display: none;
@@ -23,9 +20,14 @@
         }
         .fa {
           color : rgb(173, 47, 68);
+          font-size: 3rem
         }
         #e.fa{
           color : rgb(5, 71, 9);
+          font-size: 2rem
+        }
+        #f.fa{
+          font-size: 2rem
         }
     </style>
   </head>
@@ -48,7 +50,7 @@
       </div>
       <div id="filters">
         <label class="custom-checkbox"> 
-          <div>
+          <div >
             <span><input type="checkbox" id="reasonableprice" name="By reasonable price" >
             <i id="e" class="fa fa-credit-card unchecked"></i>
             <i id="e" class="fa fa-credit-card-alt checked"></i>
@@ -64,8 +66,8 @@
       <div>
         <label class="custom-checkbox"> 
           <span><input type="checkbox" id="favorite" >
-            <i class="fa fa-heart-o unchecked"></i>
-            <i class="fa fa-heart checked"></i>
+            <i id="f" class="fa fa-heart-o unchecked"></i>
+            <i id="f" class="fa fa-heart checked"></i>
           </span>
           favorite</label>
         </div>
@@ -120,7 +122,7 @@
     <section id="fav-product">
       <h2>Products</h2>
     <table id="table-products">
-      <thead>
+      <thead class="thead-dark">
         <th>brand</th>
         <th>name</th>
         <th>price</th>
