@@ -17,3 +17,6 @@ table td, table th{
 img{
     max-height: 200px;
 }
+select{
+    height: 25px;
+}

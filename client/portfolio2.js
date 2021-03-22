@@ -96,13 +96,25 @@ const renderProducts = products => {
       if(product.brand!="loom"){
       return tr+`
         <td><img src="${product.photo}"></td>
-        <td><input type="checkbox" id="favorite_${product._id}"> </td>
+        <td>
+        <label class="custom-checkbox"> 
+        <input type="checkbox" id="favorite_${product._id}">
+        <i class="fa fa-heart-o unchecked"></i>
+        <i class="fa fa-heart checked"></i>
+        </label>
+         </td>
       </tr>`;
       }
       else{
         return tr +`
           <td><img src="https:${product.photo}"></td>
-          <td><input type="checkbox" id="favorite_${product._id}"> </td>
+          <td>
+          <label class="custom-checkbox"> 
+          <input type="checkbox" id="favorite_${product._id}">
+          <i class="fa fa-heart-o unchecked"></i>
+          <i class="fa fa-heart checked"></i>
+          </label>
+           </td>
         </tr>`;
       }
   }).join('');
@@ -143,7 +155,7 @@ const filterAll = ()=> {
     productsFound = filterfavorite(productsFound,favorite_products);
   }
   renderpercentil(productsFound)
-  renderFavorite(productsFound,favorite_products)
+  // renderFavorite(productsFound,favorite_products)
   productsFound=sorted(productsFound,sortselect.value)
   document.querySelector('#nbProductDisplayed').innerHTML=productsFound.length
   return productsFound
