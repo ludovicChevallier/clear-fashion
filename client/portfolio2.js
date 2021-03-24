@@ -272,11 +272,9 @@ const filterprice=(products) => {
 reasonableprice.addEventListener('click',event => {
   if(reasonableprice.checked==true){
     renderProducts(filterAll())
-    renderbrands(filterAll())
   }
   else{
     renderProducts(filterAll())
-    renderbrands(filterAll())
   }
 
 });
@@ -410,11 +408,9 @@ table_product.addEventListener('click',function(e){
     if(favorite.checked==true){
       
       renderProducts(filterAll())
-      renderbrands(filterAll())
     }
     else{
       renderProducts(filterAll())
-      renderbrands(filterAll())
     }
   
   });
