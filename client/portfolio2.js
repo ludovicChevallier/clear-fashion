@@ -12,11 +12,10 @@ let value=1
 // inititiqte selectors
 const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
+const reasonableprice = document.querySelector('#reasonableprice');
 const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
 const sectionbrand = document.querySelector('#brand-select');
-const sectiondate=document.querySelector('#recentrelease');
-const reasonableprice=document.querySelector('#reasonableprice');
 const sortselect=document.querySelector('#sort-select');
 const spanNbRecentProducts=document.querySelector('#nbNewProducts');
 const table_product=document.querySelector('#table-products');
@@ -145,9 +144,6 @@ const filterAll = ()=> {
   if(reasonableprice.checked==true){
    productsFound = filterprice(productsFound);
   }
-  if(sectiondate.checked==true){
-    productsFound = filterdate(productsFound);
-  }
   if(sectionbrand.value!=""){
     productsFound = filterbrand(productsFound,sectionbrand.value);
   }
@@ -235,7 +231,7 @@ const filterbrand=(products,brand) =>{
 selectShow.addEventListener('change', event => {
   fetchProducts(1,parseInt(event.target.value))
     .then(setCurrentProducts)
-    .then(() => render(currentProducts,currentPagination)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value="",value=1),document.querySelector('#favorite').checked=false;
+    .then(() => render(currentProducts,currentPagination)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#sort-select').value="",value=1),document.querySelector('#favorite').checked=false;
 });
 
 document.addEventListener('DOMContentLoaded', () =>
@@ -253,7 +249,7 @@ selectPage.addEventListener('change', event => {
   value=event.target.value
   fetchProducts( parseInt(event.target.value),parseInt(selectShow.value))
   .then(setCurrentProducts)
-  .then(() => render(currentProducts,currentPagination)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#recentrelease').checked=false,document.querySelector('#sort-select').value=""),document.querySelector('#favorite').checked=false;
+  .then(() => render(currentProducts,currentPagination)).then(document.querySelector('#reasonableprice').checked=false,document.querySelector('#sort-select').value=""),document.querySelector('#favorite').checked=false;
 });
 
 /*features 2*/
@@ -264,19 +260,8 @@ sectionbrand.addEventListener('change', event => {
 /*features 3*/
 
 
-const filterdate=(products) => {
-  return products.filter(product =>Date.parse(product.released) > Date.now() - 1000*3600*24*30);
-};
 
-sectiondate.addEventListener('click',event => {
-  if(sectiondate.checked==true){
-    renderProducts(filterAll())
-  }
-  else{
-    renderProducts(filterAll())
-  }
 
-});
 
 /*features 4*/
 
@@ -287,9 +272,11 @@ const filterprice=(products) => {
 reasonableprice.addEventListener('click',event => {
   if(reasonableprice.checked==true){
     renderProducts(filterAll())
+    renderbrands(filterAll())
   }
   else{
     renderProducts(filterAll())
+    renderbrands(filterAll())
   }
 
 });
@@ -423,9 +410,11 @@ table_product.addEventListener('click',function(e){
     if(favorite.checked==true){
       
       renderProducts(filterAll())
+      renderbrands(filterAll())
     }
     else{
       renderProducts(filterAll())
+      renderbrands(filterAll())
     }
   
   });
