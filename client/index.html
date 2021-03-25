@@ -55,7 +55,21 @@
             <i id="e" class="fa fa-credit-card unchecked"></i>
             <i id="e" class="fa fa-credit-card-alt checked"></i>
             <label for="recentrelease"> Select the max price</label>
-            <input type="number" id="max_price" name="max_price" min="0" max="500" value="10">
+            <input type="range" list="tickmarks" id="max_price" name="max_price" min="0" max="500" value="10">
+            <datalist id="tickmarks">
+              <option value="0" label="0">
+              <option value="50">
+              <option value="100">
+              <option value="150">
+              <option value="200">
+              <option value="250" label="250">
+              <option value="300">
+              <option value="350">
+              <option value="400">
+              <option value="450">
+              <option value="500" label="500">
+            </datalist>
+            <span id="price_display">10</span>
             </span>
           </div>
         </label>

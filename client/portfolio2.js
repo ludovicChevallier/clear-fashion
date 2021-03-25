@@ -46,18 +46,14 @@ const setCurrentProducts = ({result,meta}) => {
  /*charge les produits depuis une api*/
  /*si tous se passe bien retourne les donnés plus les données de l'api*/
 const fetchProducts = async (page = 1, size = 12) => {
-
   let text=`https://server-sand-nu.vercel.app/products/search?limit=${size}&pages=${page}`;
   // let text=`http://localhost:8091/products/search?limit=${size}&pages=${page}`
   try {
     const response = await fetch(
       text
     );
-
     const body = await response.json();
-
     if (body=={'ack': "product not found"}) {
-
       console.error(body);
       return {currentProducts,currentPagination};
     }
@@ -140,17 +136,18 @@ const renderbrands=products =>{
   sectionbrand.selectedIndex = 0;
 };
 const filterAll = ()=> {
-  console.log(currentProducts)
+  
   let productsFound = currentProducts;
+  if(favorite.checked==true){
+    productsFound = filterfavorite(productsFound,favorite_products);
+  }
   if(reasonableprice.checked==true){
    productsFound = filterprice(productsFound);
   }
   if(sectionbrand.value!=""){
     productsFound = filterbrand(productsFound,sectionbrand.value);
   }
-  if(favorite.checked==true){
-    productsFound = filterfavorite(productsFound,favorite_products);
-  }
+  console.log(productsFound)
   renderpercentil(productsFound)
   // renderFavorite(productsFound,favorite_products)
   productsFound=sorted(productsFound,sortselect.value)
@@ -268,8 +265,8 @@ sectionbrand.addEventListener('change', event => {
 
 const filterprice=(products) => {
 
-  if(max_price.value==""){
-
+  if(max_price.value=="0"){
+    max_price.value=0
   }
   else if(!parseInt(max_price.value)){
     alert("please select a number for the max price");
@@ -296,6 +293,7 @@ reasonableprice.addEventListener('click',event => {
 });
 
 max_price.addEventListener('input',event=>{
+  document.querySelector("#price_display").innerHTML=parseInt(max_price.value)
   if(reasonableprice.checked==true){
     renderProducts(filterAll())
   }
@@ -417,14 +415,32 @@ table_product.addEventListener('click',function(e){
   console.log(typeof(e.target.id));
   if(e.target.id!=""){
     let id=e.target.id.slice(9);
-    if(favorite_products.includes(id)){
-      console.log(favorite_products.indexOf(id));
-      favorite_products.splice(favorite_products.indexOf(id),1);
+    let product=favorite_products.find(el=>el._id==id);
+    console.log(product)
+    if(product){
+      favorite_products.splice(favorite_products.indexOf(product),1);
     } else {
-      favorite_products.push(id);
+      currentProducts.map(product=>{
+        if(product._id==id){
+          favorite_products.push(product);
+        }
+      })
+      
     }
     console.log(favorite_products)
   }})
+  // table_product.addEventListener('click',function(e){
+  //   console.log(typeof(e.target.id));
+  //   if(e.target.id!=""){
+  //     let id=e.target.id.slice(9);
+  //     if(favorite_products.includes(id)){
+  //       console.log(favorite_products.indexOf(id));
+  //       favorite_products.splice(favorite_products.indexOf(id),1);
+  //     } else {
+  //       favorite_products.push(id);
+  //     }
+  //     console.log(favorite_products)
+  //   }})
 
   favorite.addEventListener('click',event => {
     if(favorite.checked==true){
@@ -436,31 +452,48 @@ table_product.addEventListener('click',function(e){
     }
   
   });
+// const filterfavorite=(products,favorite_products)=>{
+//   if(favorite_products.length!=0){
+//     let new_products=[]
+//     products.map(product=>{
+//       if(favorite_products.includes(product._id)){
+//         new_products.push(product)
+//       }
+//     })
+//     return new_products
+//   }
+//   else{
+//     return products
+//   }
+// }
 const filterfavorite=(products,favorite_products)=>{
   if(favorite_products.length!=0){
     let new_products=[]
-    products.map(product=>{
-      if(favorite_products.includes(product._id)){
-        new_products.push(product)
-      }
+    favorite_products.map(product=>{
+      new_products.push(product)
     })
     return new_products
   }
   else{
-    return products
+    return []
   }
 }
 const renderFavorite=(products,favorite_products)=>{
   if(favorite_products.length!=0){
-    products.map(product=>{
-      if(favorite_products.includes(product._id)){
-        console.log(`#favorite_${product._id}`)
-        document.querySelector(`#favorite_${product._id}`).checked=true
-      }
+    favorite_products.map(product=>{
+    console.log(`#favorite_${product._id}`)
+    if(products.find(el=>el._id==product._id))
+    {
+      document.querySelector(`#favorite_${product._id}`).checked=true
+    }
     })
   }
   else{
   }
+  if(sectionbrand.value=="" ){
+    renderbrands(products);
+  }
+
 }
 
   

@@ -42,6 +42,8 @@ table th {
     background-color: #343a40;
     border-color: #454d55;
 }
-
+input[type="range"] {
+    width:400px;
+  }
 
 
