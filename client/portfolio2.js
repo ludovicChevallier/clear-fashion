@@ -20,6 +20,7 @@ const sortselect=document.querySelector('#sort-select');
 const spanNbRecentProducts=document.querySelector('#nbNewProducts');
 const table_product=document.querySelector('#table-products');
 const favorite=document.querySelector('#favorite');
+const max_price=document.querySelector("#max_price")
 
 
 
@@ -266,7 +267,22 @@ sectionbrand.addEventListener('change', event => {
 /*features 4*/
 
 const filterprice=(products) => {
-  return products.filter(product =>product.price<50);
+
+  if(max_price.value==""){
+
+  }
+  else if(!parseInt(max_price.value)){
+    alert("please select a number for the max price");
+    max_price.value="10"
+  }
+  else if(parseInt(max_price.value)<parseInt(max_price.min)){
+    max_price.value=max_price.min;
+  }
+  else if(parseInt(max_price.value)>parseInt(max_price.max)){
+    max_price.value=max_price.max;
+  }
+
+  return products.filter(product =>product.price<=parseInt(max_price.value));
 };
 
 reasonableprice.addEventListener('click',event => {
@@ -278,6 +294,12 @@ reasonableprice.addEventListener('click',event => {
   }
 
 });
+
+max_price.addEventListener('input',event=>{
+  if(reasonableprice.checked==true){
+    renderProducts(filterAll())
+  }
+})
 /*features 5 et 6*/
 function compare_price( a, b ) {
   if ( a.price < b.price ){
