@@ -42,8 +42,46 @@ table th {
     background-color: #343a40;
     border-color: #454d55;
 }
+.custom-checkbox input[type="checkbox"],
+.custom-checkbox .checked {
+  display: none;
+}
+.custom-checkbox input[type="checkbox"]:checked ~ .checked
+{
+  display: inline-block;
+}
+.custom-checkbox input[type="checkbox"]:checked ~ .unchecked
+{
+  display: none;
+}
+.fa {
+color : rgb(173, 47, 68);
+font-size: 3rem;
+}
+#e.fa{
+color : rgb(5, 71, 9);
+font-size: 2rem;
+}
+#f1,#f2{
+font-size: 2rem;
+}
+#options{
+    display: flex;
+}
+#show,#page,#sort{
+    flex-grow: 1;
+}
+#filters{
+    flex-grow: 2;
+
+    display: flex;
+}
+#filter-group-price, #filter-group-favorite, #brand, #sort, #page, #show{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: center;
+}
 input[type="range"] {
-    width:400px;
+    width:300px;
   }
-
-

@@ -378,28 +378,6 @@ const renderpercentil=products=>{
       return a - b;
     });
   }
-  
-  function Array_Sum(t){
-     return t.reduce(function(a, b) { return a + b; }, 0); 
-  }
-  
-  function Array_Average(data) {
-    return Array_Sum(data) / data.length;
-  }
-  
-  function Array_Stdev(tab){
-     var i,j,total = 0, mean = 0, diffSqredArr = [];
-     for(i=0;i<tab.length;i+=1){
-         total+=tab[i];
-     }
-     mean = total/tab.length;
-     for(j=0;j<tab.length;j+=1){
-         diffSqredArr.push(Math.pow((tab[j]-mean),2));
-     }
-     return (Math.sqrt(diffSqredArr.reduce(function(firstEl, nextEl){
-              return firstEl + nextEl;
-            })/tab.length));  
-  }
   if(list_price.length==0){
     document.querySelector('#p50').innerHTML=0
     document.querySelector('#p90').innerHTML=0
@@ -429,43 +407,18 @@ table_product.addEventListener('click',function(e){
     }
     console.log(favorite_products)
   }})
-  // table_product.addEventListener('click',function(e){
-  //   console.log(typeof(e.target.id));
-  //   if(e.target.id!=""){
-  //     let id=e.target.id.slice(9);
-  //     if(favorite_products.includes(id)){
-  //       console.log(favorite_products.indexOf(id));
-  //       favorite_products.splice(favorite_products.indexOf(id),1);
-  //     } else {
-  //       favorite_products.push(id);
-  //     }
-  //     console.log(favorite_products)
-  //   }})
 
   favorite.addEventListener('click',event => {
     if(favorite.checked==true){
-      
-      renderProducts(filterAll())
+      sectionbrand.value="";
+      renderProducts(filterAll());
     }
     else{
-      renderProducts(filterAll())
+      sectionbrand.value="";
+      renderProducts(filterAll());
     }
   
   });
-// const filterfavorite=(products,favorite_products)=>{
-//   if(favorite_products.length!=0){
-//     let new_products=[]
-//     products.map(product=>{
-//       if(favorite_products.includes(product._id)){
-//         new_products.push(product)
-//       }
-//     })
-//     return new_products
-//   }
-//   else{
-//     return products
-//   }
-// }
 const filterfavorite=(products,favorite_products)=>{
   if(favorite_products.length!=0){
     let new_products=[]

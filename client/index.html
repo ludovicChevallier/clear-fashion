@@ -2,34 +2,9 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>👕 Clear Fahion | Environmentally & human-friendly clothes</title>
-    <link rel="stylesheet" href="css/clear-fashion.css">
+    <title>👕 Clear Fahion | Environmentally & human-friendly clothes</title>    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style>
-        .custom-checkbox input[type="checkbox"],
-            .custom-checkbox .checked {
-            display: none;
-        }
-        .custom-checkbox input[type="checkbox"]:checked ~ .checked
-        {
-            display: inline-block;
-        }
-        .custom-checkbox input[type="checkbox"]:checked ~ .unchecked
-        {
-            display: none;
-        }
-        .fa {
-          color : rgb(173, 47, 68);
-          font-size: 3rem
-        }
-        #e.fa{
-          color : rgb(5, 71, 9);
-          font-size: 2rem
-        }
-        #f.fa{
-          font-size: 2rem
-        }
-    </style>
+    <link rel="stylesheet" href="css/clear-fashion.css">
   </head>
   <body>
     <h1>Clear fashion</h1>
@@ -49,12 +24,13 @@
         <select name="page" id="page-select"> </select>
       </div>
       <div id="filters">
-        <label class="custom-checkbox"> 
-          <div >
-            <span><input type="checkbox" id="reasonableprice" name="By reasonable price" >
-            <i id="e" class="fa fa-credit-card unchecked"></i>
-            <i id="e" class="fa fa-credit-card-alt checked"></i>
-            <label for="recentrelease"> Select the max price</label>
+        <label id="filter-group-price" class="custom-checkbox"> 
+            <label id="reasonableprice-label" for="recentrelease">Select the max price</label>
+            <input type="checkbox" id="reasonableprice" name="By reasonable price" >
+              <i id="e" class="fa fa-credit-card unchecked"></i>
+              <i id="e" class="fa fa-credit-card-alt checked"></i>
+            </input>
+            
             <input type="range" list="tickmarks" id="max_price" name="max_price" min="0" max="500" value="10">
             <datalist id="tickmarks">
               <option value="0" label="0">
@@ -71,16 +47,14 @@
             </datalist>
             <span id="price_display">10</span>
             </span>
-          </div>
         </label>
-      <div>
-        <label class="custom-checkbox"> 
+        <label id="filter-group-favorite" class="custom-checkbox"> 
+          <span>Favorite</span>
           <span><input type="checkbox" id="favorite" >
-            <i id="f" class="fa fa-heart-o unchecked"></i>
-            <i id="f" class="fa fa-heart checked"></i>
+            <i id="f1" class="fa fa-heart-o unchecked"></i>
+            <i id="f2" class="fa fa-heart checked"></i>
           </span>
-          favorite</label>
-        </div>
+        </label>
           
         <div id="brand">
           <label for="brand-select">By brands:</label>
