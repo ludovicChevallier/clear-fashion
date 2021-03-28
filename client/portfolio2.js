@@ -323,9 +323,6 @@ const sorted=(products,value)=>{
   case 'date-desc':
   return products.sort(function(a, b){return Date.parse(b.released)-Date.parse(a.released)});
   break;
-  case "":
-  return  products.sort(function(a, b){return a.price-b.price});
-  break;
   default:
   return products;
 
