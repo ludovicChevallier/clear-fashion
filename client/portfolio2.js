@@ -317,11 +317,8 @@ const sorted=(products,value)=>{
   case 'price-desc':
   return products.sort(function(a, b){return b.price-a.price});
   break;
-  case'date-asc':
-  return products.sort(function(a, b){return Date.parse(a.released)-Date.parse(b.released)});
-  break;
-  case 'date-desc':
-  return products.sort(function(a, b){return Date.parse(b.released)-Date.parse(a.released)});
+  case "":
+  return  products.sort(function(a, b){return a.price-b.price});
   break;
   default:
   return products;
