@@ -141,6 +141,9 @@ const filterAll = ()=> {
   if(favorite.checked==true){
     productsFound = filterfavorite(productsFound,favorite_products);
   }
+  if(sortselect.value!=""|| favorite.checked!=true){
+    productsFound=sorted(productsFound,sortselect.value)
+  }
   if(reasonableprice.checked==true){
    productsFound = filterprice(productsFound);
   }
@@ -150,7 +153,7 @@ const filterAll = ()=> {
   console.log(productsFound)
   renderpercentil(productsFound)
   // renderFavorite(productsFound,favorite_products)
-  productsFound=sorted(productsFound,sortselect.value)
+
   document.querySelector('#nbProductDisplayed').innerHTML=productsFound.length
   return productsFound
 
